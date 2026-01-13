@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 220 25% 5%;
+    --foreground: 210 40% 98%;
+
+    --card: 220 25% 10%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 220 25% 8%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 220 90% 56%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 270 70% 60%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 220 25% 15%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 180 90% 60%;
+    --accent-foreground: 220 25% 5%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 25% 20%;
+    --input: 220 25% 15%;
+    --ring: 220 90% 56%;
+
+    --radius: 1rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(220, 90%, 56%), hsl(270, 70%, 60%));
+    --gradient-hero: linear-gradient(135deg, hsl(220, 90%, 56%), hsl(270, 70%, 60%), hsl(180, 90%, 60%));
+    --gradient-accent: linear-gradient(135deg, hsl(180, 90%, 60%), hsl(220, 90%, 56%));
+
+    /* Glows */
+    --glow-primary: 0 0 40px hsl(220 90% 56% / 0.4);
+    --glow-secondary: 0 0 40px hsl(270 70% 60% / 0.4);
+    --glow-accent: 0 0 40px hsl(180 90% 60% / 0.4);
+
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overscroll-behavior: none;
+    height: 100%;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+    overscroll-behavior: none;
+    height: 100%;
+  }
+
+  html::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari and Opera */
+  }
+}
+
+@layer utilities {
+  .glow-primary {
+    box-shadow: var(--glow-primary);
+  }
+
+  .glow-secondary {
+    box-shadow: var(--glow-secondary);
+  }
+
+  .glow-accent {
+    box-shadow: var(--glow-accent);
+  }
+
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+
+  .hover-gradient-primary:hover {
+    background: var(--gradient-primary) !important;
+    border-color: transparent !important;
+    color: white !important;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari and Opera */
+  }
+
+  /* Marquee Animation */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .animate-marquee {
+    display: flex;
+    white-space: nowrap;
+    animation: marquee 30s linear infinite;
+  }
+  
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
