@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { LogOut, ArrowLeft, Menu } from "lucide-react";
 import ProfileCompletionModal from "@/components/ProfileCompletionModal";
@@ -24,7 +23,7 @@ interface User {
 
 type Section = "profile" | "redeem" | "courses" | "news";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+// const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const AffiliateDashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -64,38 +63,29 @@ const AffiliateDashboard = () => {
       return;
     }
 
-    axios
-      .get(`${API}/api/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        if (res.data.user) {
-          const u = res.data.user;
-          setUser(u);
-          if (!searchParams.get("section")) {
-            setActiveSection("profile");
-            setSearchParams({ section: "profile" }, { replace: true });
-          }
-        } else {
-          localStorage.removeItem("token");
-          navigate("/auth");
-        }
-      })
-      .catch(() => {
-        localStorage.removeItem("token");
-        navigate("/auth");
-      })
-      .finally(() => setLoading(false));
+    // MOCK USER DATA
+    setUser({
+      _id: "demo-id",
+      email: "demo@example.com",
+      fullName: "Demo User",
+      isAdmin: false,
+    });
+
+    if (!searchParams.get("section")) {
+      setActiveSection("profile");
+      setSearchParams({ section: "profile" }, { replace: true });
+    }
+    setLoading(false);
   }, [navigate]);
 
-  // SUPER ADMIN LANDING PAGE (Auto-Redirect)
+  // SUPER ADMIN LANDING PAGE (Disabled for UI-only)
+  /*
   useEffect(() => {
     if (user?.isAdmin) {
       window.location.href = `http://localhost:5175?token=${localStorage.getItem("token")}`;
     }
   }, [user]);
+  */
 
   /* =========================
      LOGOUT

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -19,28 +18,15 @@ interface CourseCardProps {
   };
 }
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+// const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const CourseCard = ({ course }: CourseCardProps) => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const checkRole = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-      try {
-        const res = await axios.get(`${API}/api/auth/me`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.data.user.adminRole === 'superadmin') {
-          setIsAdmin(true);
-        }
-      } catch (err) {
-        console.error("Role check failed", err);
-      }
-    };
-    checkRole();
+    // Role check disabled for UI-only demo
+    setIsAdmin(false);
   }, []);
 
   const handleView = () => {

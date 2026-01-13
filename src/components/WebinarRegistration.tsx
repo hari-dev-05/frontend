@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import axios from "axios";
 import { Video, Calendar, Clock, Users, CheckCircle, Heart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
@@ -17,7 +16,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+// const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 // Validate referral code format: AIGENXT-XXXXXXXX
 const referralCodeSchema = z.string().regex(/^AIGENXT-[A-Z0-9]{8}$/).optional();
@@ -42,52 +41,15 @@ const WebinarRegistration = () => {
   });
 
   useEffect(() => {
-    // Check Login & Fetch User
+    // Check Login (UI-only)
     const token = localStorage.getItem("token");
     if (token) {
-      axios.get(`${API}/api/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-        .then(res => {
-          if (res.data.user) {
-            // Auto-refresh once if email is missing to try and fix potential glitch
-            if (!res.data.user.email) {
-              const hasRetried = sessionStorage.getItem("webinar_retry_email");
-              if (!hasRetried) {
-                sessionStorage.setItem("webinar_retry_email", "true");
-                window.location.reload();
-                return;
-              }
-            }
-
-            setIsLoggedIn(true);
-            setName(res.data.user.fullName || "");
-            setEmail(res.data.user.email || "");
-            setPhone(res.data.user.phone || "");
-          }
-        })
-        .catch(() => {
-          // Token invalid or server error -> treat as guest
-          localStorage.removeItem("token");
-          setIsLoggedIn(false);
-        });
+      setIsLoggedIn(true);
+      setName("Demo User");
+      setEmail("demo@example.com");
     }
 
-    // Fetch active webinar details
-    const fetchSettings = async () => {
-      try {
-        const res = await axios.get(`${API}/api/webinar/settings`);
-        if (res.data) {
-          setWebinarDetails({
-            ...res.data,
-            description: res.data.description || ""
-          });
-        }
-      } catch (err) {
-        // silent fail, use defaults
-      }
-    };
-    fetchSettings();
+    // Fetch active webinar details (Disabled - using defaults)
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -102,38 +64,8 @@ const WebinarRegistration = () => {
 
     setIsLoading(true);
 
-    try {
-      // Get referral code from URL if present and validate format
-      const urlParams = new URLSearchParams(window.location.search);
-      const rawReferralCode = urlParams.get("ref");
-
-      // Validate referral code format before using
-      const validationResult = referralCodeSchema.safeParse(rawReferralCode);
-      const referralCode = validationResult.success ? validationResult.data : null;
-
-      const res = await axios.post(`${API}/api/webinar/register`, {
-        name,
-        email,
-        phone: phone || null,
-        referral_code: referralCode,
-        redeemCode: redeemCode || null,
-        webinarDate: webinarDetails.date,
-        webinarTopic: webinarDetails.topic,
-        webinarDescription: webinarDetails.description
-      });
-
-      if (res.data.success === false) {
-        // Handle "Soft" Error (Validation/Duplicate) -> Yellow Toast
-        toast({
-          title: "Note",
-          description: res.data.message,
-          variant: "default",
-          className: "bg-yellow-500 text-black border-none"
-        });
-        return; // Stop execution
-      }
-
-      // Success -> Green Toast
+    setTimeout(() => {
+      // Success -> Green Toast (UI-only)
       setName("");
       setEmail("");
       setPhone("");
@@ -141,21 +73,12 @@ const WebinarRegistration = () => {
 
       toast({
         title: "Registration Successful!",
-        description: `You've been registered for the ${webinarDetails.date} webinar. Check your email.`,
+        description: `You've been registered for the ${webinarDetails.date} webinar (UI-only demo).`,
         variant: "default",
         className: "bg-green-600 text-white border-none"
       });
-    } catch (error: any) {
-      // Handle Network/Server Errors (500, etc) -> Red Toast
-      const errorMessage = error.response?.data?.message || error.message || "Please try again later.";
-      toast({
-        title: "Registration Failed",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    } finally {
       setIsLoading(false);
-    }
+    }, 1000);
   };
 
 

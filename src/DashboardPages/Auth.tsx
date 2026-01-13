@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, ArrowLeft, Sparkles } from "lucide-react";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+// Removed backend API reference
+// const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -28,14 +28,9 @@ const Auth = () => {
   ========================= */
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) return;
-
-    axios
-      .get(`${API}/api/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(() => navigate("/affiliate"))
-      .catch(() => localStorage.removeItem("token"));
+    if (token) {
+      navigate("/affiliate");
+    }
   }, [navigate]);
 
   /* =========================
@@ -52,53 +47,28 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
 
-    try {
+    setTimeout(() => {
       if (isLogin) {
-        // 🔐 LOGIN
-        const res = await axios.post(`${API}/api/auth/login`, {
-          email,
-          password,
-        });
-
-        localStorage.setItem("token", res.data.token);
+        // 🔐 MOCK LOGIN
+        localStorage.setItem("token", "demo-token");
 
         toast({
           title: "Login successful",
-          description: "Welcome back!",
-          variant: "success",
+          description: "UI-only demo login",
         });
 
         navigate("/affiliate");
       } else {
-        // 🆕 MANUAL REGISTER
-        await axios.post(`${API}/api/auth/register`, {
-          fullName,
-          phone,
-          email,
-          password,
-        });
-
+        // 🆕 MOCK REGISTER
         toast({
           title: "Account created",
-          description: "Please login to continue",
-          variant: "success",
+          description: "Please login to continue (UI-only)",
         });
 
         setIsLogin(true);
       }
-    } catch (error: unknown) {
-      const message = axios.isAxiosError(error)
-        ? error.response?.data?.message
-        : "Something went wrong";
-
-      toast({
-        title: "Error",
-        description: message || "Request failed",
-        variant: "destructive",
-      });
-    } finally {
       setLoading(false);
-    }
+    }, 800);
   };
 
   /* =========================
